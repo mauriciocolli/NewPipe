@@ -241,6 +241,33 @@ public class AnimationUtils {
                 }).start();
     }
 
+    public static ValueAnimator shakeView(View view) {
+        view.animate().setListener(null).cancel();
+
+        final int offset = view.getWidth() / 8;
+        ValueAnimator animator = ValueAnimator.ofFloat(0, -offset, 0, offset, 0);
+        animator.setDuration(250);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.addUpdateListener(animation -> {
+            final float value = (float) animation.getAnimatedValue();
+            view.setTranslationX(value);
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                view.setTranslationX(0);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                view.setTranslationX(0);
+            }
+        });
+        animator.start();
+
+        return animator;
+    }
+
     /*//////////////////////////////////////////////////////////////////////////
     // Internals
     //////////////////////////////////////////////////////////////////////////*/
